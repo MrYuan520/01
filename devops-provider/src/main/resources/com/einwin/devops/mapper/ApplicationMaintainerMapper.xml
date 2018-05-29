@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.einwin.devops.provider.mapper.ApplicationMaintainerMapper">
+    <resultMap id="BaseResultMap" type="com.einwin.devops.api.model.ApplicationMaintainer">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="application_id" jdbcType="BIGINT" property="applicationId" />
+        <result column="member_id" jdbcType="VARCHAR" property="memberId" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+        <result column="member_phone" jdbcType="VARCHAR" property="memberPhone" />
+        <result column="member_no" jdbcType="VARCHAR" property="memberNo" />
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+        <result column="enabled_flag" jdbcType="INTEGER" property="enabledFlag" />
+    </resultMap>
+    <sql id="BaseTable">
+        application_maintainer
+    </sql>
+    <!--<sql id="BaseColumns">-->
+    <!--</sql>-->
+    <!--<sql id="GenerationType">-->
+    <!--DB_UUID ( select replace(uuid(),'-','') from dual )-->
+    <!--</sql>-->
+
+    <update id="disabledByAppId" parameterType="java.lang.Long">
+        update <include refid="BaseTable" />
+        set enabled_flag = 0
+        where application_id = #{appId}
+    </update>
+
+    <update id="deleteByAppId" parameterType="java.lang.Long">
+        delete from <include refid="BaseTable" />
+        where application_id = #{appId}
+    </update>
+
+    <select id="getByAppId" resultType="com.einwin.devops.api.model.ApplicationMaintainer" parameterType="java.lang.Long">
+        select member_id as memberId, member_name as memberName, member_phone as memberPhone, member_no as memberNo from application_maintainer
+        where application_id = #{appId}
+    </select>
+</mapper>

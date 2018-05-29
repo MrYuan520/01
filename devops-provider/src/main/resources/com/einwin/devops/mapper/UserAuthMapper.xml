@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.einwin.devops.provider.mapper.UserAuthMapper">
+    <resultMap id="BaseResultMap" type="com.einwin.devops.api.model.UserAuth">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+        <result column="enabled_flag" jdbcType="INTEGER" property="enabledFlag" />
+        <result column="module_id" jdbcType="BIGINT" property="moduleId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    </resultMap>
+    <sql id="BaseTable">
+        user_auth
+    </sql>
+    <!--<sql id="BaseColumns">-->
+    <!--</sql>-->
+    <!--<sql id="GenerationType">-->
+    <!--DB_UUID ( select replace(uuid(),'-','') from dual )-->
+    <!--</sql>-->
+
+    <select id="getAuthModule" resultType="com.einwin.devops.api.model.Module" parameterType="java.lang.String">
+        select a.id, a.parent_id  as parentId, a.`code`, a.`name`, a.icon, a.path, a.`order`,
+        case
+            when b.id is not null then 1
+            when a.`path` = 'profile' then 1
+            else 0
+        end as authorized
+        from module a
+        left join user_auth b on b.module_id = a.id
+        and b.enabled_flag = 1
+        and b.user_id = #{userId}
+        where a.enabled_flag = 1
+        order by a.parent_id, a.`order` ASC
+    </select>
+
+    <update id="deleteUserAuthByUserId" parameterType="java.lang.String">
+        delete from <include refid="BaseTable" />
+        where user_id = #{userId}
+    </update>
+</mapper>

@@ -1,0 +1,119 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname:devops.eureka.einwin.com}:${eureka.server.port:18761}/eureka/
+      #defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.server.port:18761}/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        sleepWindowInMilliseconds: 30000
+        requestVolumeThreshold: 50
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE
+          semaphore:
+            maxConcurrentRequests: 50
+          thread:
+            timeoutInMilliseconds: 100000
+#einwin:
+#  framework:
+#    cors: false
+spring:
+  jackson:
+    time-zone: GMT+8
+  profiles:
+    active: test
+  output:
+    ansi:
+      enabled: detect
+  main:
+    #bannerMode: log
+  mvc:
+    favicon:
+      enabled: false
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  http:
+    encoding:
+      charset: utf-8
+      enabled: true
+      force: true
+  messages:
+    basename: i18n/messages
+    cache-seconds: -1
+    encoding: utf-8
+  boot:
+    admin:
+      url: http://admin.einwin.com:18760
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://mysql.einwin.com:5630/devops?tinyInt1isBit=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: CCpg@2017
+    hikari:
+      auto-commit: false
+      minimum-idle: 5
+      idle-timeout: 10000
+      maximum-pool-size: 20
+      connection-init-sql: select 1
+      pool-name: ${spring.application.name}
+
+spring.rabbitmq:
+  host: ${rabbitmq.server.hostname:mq.einwin.com}
+  port: ${rabbitmq.server.port:6127}
+  username: admin
+  password: admin
+
+#spring:
+#  zipkin:
+#    baseUrl: zipkin.einwin.com
+#  sleuth:
+#    sampler:
+#      percentage: 1.0
+
+spring.redis:
+  host: redis.einwin.com
+  port: 5937
+  password: 123456
+  database: 6
+  timeout: 30000
+  pool:
+    max-active: 20
+    max-idle: 5
+
+
+server:
+  port: 10057
+  context-path: /
+  compression:
+    enabled: true
+
+mybatis:
+#    type-aliases-package: com.example.domain.model
+#    type-handlers-package: com.example.typehandler
+    configuration:
+        map-underscore-to-camel-case: true
+        default-fetch-size: 100
+        default-statement-timeout: 30
+    mapperLocations: classpath*:com/einwin/devops/mapper/*.xml
+
+logging:
+  file: ${spring.application.name}
+  level:
+    ROOT: ERROR
+    org.springframework: INFO
+    org.springframework.web.servlet.view: DEBUG
+    org.springframework.web.servlet.mvc: DEBUG
+    io.undertow.request: DEBUG
+    com.einwin: DEBUG
+    com.einwin.framework.mybatis: DEBUG

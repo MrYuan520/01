@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.einwin.devops.provider.mapper.HostMapper">
+    <resultMap id="BaseResultMap" type="com.einwin.devops.api.model.Host">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="host_ip" jdbcType="VARCHAR" property="hostIp" />
+        <result column="hostname" jdbcType="VARCHAR" property="hostname" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="system" jdbcType="VARCHAR" property="system" />
+        <result column="tag" jdbcType="VARCHAR" property="tag" />
+        <result column="system_architect" jdbcType="VARCHAR" property="systemArchitect" />
+        <result column="system_type" jdbcType="VARCHAR" property="systemType" />
+        <result column="released_version" jdbcType="VARCHAR" property="releasedVersion" />
+        <result column="kernel_version" jdbcType="VARCHAR" property="kernelVersion" />
+        <result column="cpu_type" jdbcType="VARCHAR" property="cpuType" />
+        <result column="GHz" jdbcType="VARCHAR" property="ghz" />
+        <result column="CPUcore_Num" jdbcType="INTEGER" property="cpucoreNum" />
+        <result column="ram" jdbcType="VARCHAR" property="ram" />
+        <result column="rom" jdbcType="VARCHAR" property="rom" />
+        <result column="mac" jdbcType="VARCHAR" property="mac" />
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+        <result column="enabled_flag" jdbcType="INTEGER" property="enabledFlag" />
+    </resultMap>
+    <sql id="BaseTable">
+        host
+    </sql>
+    <!--<sql id="BaseColumns">-->
+    <!--</sql>-->
+    <!--<sql id="GenerationType">-->
+    <!--DB_UUID ( select replace(uuid(),'-','') from dual )-->
+    <!--</sql>-->
+
+    <select id="search" resultMap="BaseResultMap">
+        select <include refid="BaseColumns" />
+        from <include refid="BaseTable" />
+        where enabled_flag = 1
+        <if test="criteria.vo != null and criteria.vo.hostname != null and criteria.vo.hostname != ''">
+            and hostname like '%${criteria.vo.hostname}%'
+        </if>
+        <if test="criteria.vo != null and criteria.vo.hostIp != null and criteria.vo.hostIp != ''">
+            and host_ip like '%${criteria.vo.hostIp}%'
+        </if>
+        <if test="criteria.vo != null and criteria.vo.creationDate != null and criteria.vo.creationDate != ''">
+            and creation_date like '%${criteria.vo.creationDate}%'
+        </if>
+        <if test="criteria.vo != null and criteria.vo.status != null and criteria.vo.status != ''">
+            and status = '${criteria.vo.status}'
+        </if>
+        order by updation_date desc
+    </select>
+</mapper>

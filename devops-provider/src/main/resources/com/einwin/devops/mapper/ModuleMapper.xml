@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.einwin.devops.provider.mapper.ModuleMapper">
+    <resultMap id="BaseResultMap" type="com.einwin.devops.api.model.Module">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+        <result column="enabled_flag" jdbcType="INTEGER" property="enabledFlag" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="`order`" jdbcType="INTEGER" property="order" />
+        <result column="`desc`" jdbcType="VARCHAR" property="desc" />
+    </resultMap>
+    <sql id="BaseTable">
+        module
+    </sql>
+    <!--<sql id="BaseColumns">-->
+    <!--</sql>-->
+    <!--<sql id="GenerationType">-->
+    <!--DB_UUID ( select replace(uuid(),'-','') from dual )-->
+    <!--</sql>-->
+    <select id="search" resultMap="BaseResultMap">
+        select <include refid="BaseColumns" />
+        from <include refid="BaseTable" />
+        where enabled_flag = 1
+        <if test="criteria.vo != null and criteria.vo.code != null and criteria.vo.code != ''">
+            and code like '%${criteria.vo.code}%'
+        </if>
+        <if test="criteria.vo != null and criteria.vo.name != null and criteria.vo.name != ''">
+            and name like '%${criteria.vo.name}%'
+        </if>
+        <if test="criteria.vo != null and criteria.vo.path != null and criteria.vo.path != ''">
+            and path like '%${criteria.vo.path}%'
+        </if>
+        <if test="criteria.vo != null and criteria.vo.includeIds != null">
+            and id in (${criteria.vo.includeIds})
+        </if>
+        <choose>
+            <when test="criteria.sorterField != null and criteria.sorterField != '' and criteria.sorterOrder != null and criteria.sorterOrder != ''">
+                order by ${criteria.sorterField} ${criteria.sorterOrder}
+            </when>
+            <otherwise>
+                order by creation_date desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select <include refid="BaseColumns" />
+        from <include refid="BaseTable" />
+        where enabled_flag = 1
+        order by parent_id, `order` ASC
+    </select>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.einwin.devops.provider.mapper.ApplicationMapper">
+    <resultMap id="BaseResultMap" type="com.einwin.devops.api.model.Application">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="version_control_type" jdbcType="VARCHAR" property="versionControlType" />
+        <result column="source_code_url" jdbcType="VARCHAR" property="sourceCodeUrl" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+        <result column="enabled_flag" jdbcType="INTEGER" property="enabledFlag" />
+    </resultMap>
+    <sql id="BaseTable">
+        application
+    </sql>
+    <!--<sql id="BaseColumns">-->
+    <!--</sql>-->
+    <!--<sql id="GenerationType">-->
+    <!--DB_UUID ( select replace(uuid(),'-','') from dual )-->
+    <!--</sql>-->
+
+    <select id="search" resultMap="BaseResultMap">
+        select <include refid="BaseColumns" />
+        from <include refid="BaseTable" />
+        where enabled_flag = 1
+        <if test="criteria.vo != null and criteria.vo.name != null and criteria.vo.name != ''">
+            and name like '%${criteria.vo.name}%'
+        </if>
+        <choose>
+            <when test="criteria.sorterField != null and criteria.sorterField != '' and criteria.sorterOrder != null and criteria.sorterOrder != ''">
+                order by ${criteria.sorterField} ${criteria.sorterOrder}
+            </when>
+            <otherwise>
+                order by creation_date desc
+            </otherwise>
+        </choose>
+    </select>
+</mapper>
